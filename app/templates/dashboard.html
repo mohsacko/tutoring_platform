@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Tutoring Platform{% endblock %}
+
+{% block content %}
+{% if student %}
+    <h3>Welcome to your Dashboard, {{ student.name }}!</h3>
+{% else %}
+    <h3>Welcome to your Dashboard!</h3>
+{% endif %}
+
+<div class="row justify-content-center">
+    <div class="col-md-3">
+        <!-- Left section (30% width) -->
+        <div class="card shadow-sm rounded">
+            <div class="card-body">
+                <h5 class="card-title">Subjects</h5>
+                {% if grouped_classes %}
+                    <ul id="subject-list">
+                        {% for subject, classes in grouped_classes.items() %}
+                            <li><a href="#" class="subject-item" data-subject="{{ subject }}">{{ subject }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No subjects found.</p>
+                {% endif %}
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('main.find_classes') }}" class="btn btn-primary mt-3">Find New Classes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <!-- Right section (70% width) -->
+        <div class="card shadow-sm rounded">
+            <div class="card-body">
+                <h5 class="card-title">Classes</h5>
+                <div id="class-list">
+                    <!-- Classes will be dynamically loaded here -->
+                    <p>Select a subject to view classes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tutor Details Modal -->
+<div class="modal fade" id="tutorModal" tabindex="-1" aria-labelledby="tutorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tutorModalLabel">Tutor Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Name:</strong> <span id="tutorName"></span></p>
+        <p><strong>Email:</strong> <span id="tutorEmail"></span></p>
+        <p><strong>Years of Experience:</strong> 10</p>
+        <p><img src="{{ url_for('static', filename='images/professor_small.jpg') }}" alt="Profile"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("DOM fully loaded and parsed");
+        const subjectItems = document.querySelectorAll('.subject-item');
+        subjectItems.forEach(item => {
+            item.addEventListener('click', function (event) {
+                event.preventDefault();
+                console.log("Subject clicked:", this.getAttribute('data-subject'));
+                const subject = this.getAttribute('data-subject');
+                fetchClasses(subject);
+            });
+        });
+
+        attachDropClassListeners();
+    });
+
+    function fetchClasses(subject) {
+        fetch(`/get_classes/${subject}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Classes fetched:", data);
+                const classList = document.getElementById('class-list');
+                classList.innerHTML = '';
+
+                if (data.classes.length > 0) {
+                    const container = document.createElement('div');
+                    container.classList.add('container');
+                    classList.appendChild(container);
+
+                    let row = document.createElement('div');
+                    row.classList.add('row');
+                    container.appendChild(row);
+
+                    data.classes.forEach((cls, index) => {
+                        if (index % 2 === 0 && index > 0) {
+                            // Append the completed row and create a new one
+                            container.appendChild(row);
+                            row = document.createElement('div');
+                            row.classList.add('row');
+                            container.appendChild(row);
+                        }
+
+                        const col = document.createElement('div');
+                        col.classList.add('col-md-6');
+                        col.innerHTML = `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">${cls.name}</h6>
+                                    <p class="card-text">${cls.description}</p>
+                                    <small class="text-muted">Tutor: <a href="#" class="tutor-link" data-tutor-id="${cls.tutor.id}">${cls.tutor.name}</a></small>
+                                    <button class="btn btn-danger btn-sm drop-class-btn mt-2" data-class-id="${cls.id}">Drop Class</button>
+                                </div>
+                            </div>
+                        `;
+                        row.appendChild(col);
+                    });
+
+                    // Append the last row if it contains classes
+                    if (row.children.length > 0) {
+                        container.appendChild(row);
+                    }
+
+                    // Reattach event listeners
+                    attachDropClassListeners();
+                } else {
+                    classList.innerHTML = '<p>No classes found for this subject.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching classes:', error);
+            });
+    }
+
+    function attachDropClassListeners() {
+        const dropClassButtons = document.querySelectorAll('.drop-class-btn');
+        dropClassButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                console.log("Drop class button clicked:", this.getAttribute('data-class-id'));
+                const classId = this.getAttribute('data-class-id');
+                dropClass(classId);
+            });
+        });
+
+        const tutorLinks = document.querySelectorAll('.tutor-link');
+        tutorLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                console.log("Tutor link clicked:", this.getAttribute('data-tutor-id'));
+                const tutorId = this.getAttribute('data-tutor-id');
+                fetchTutorDetails(tutorId);
+            });
+        });
+    }
+
+    function fetchTutorDetails(tutorId) {
+        fetch(`/get_tutor/${tutorId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Tutor details fetched:", data);
+                document.getElementById('tutorName').textContent = data.name;
+                document.getElementById('tutorEmail').textContent = data.email;
+                var tutorModal = new bootstrap.Modal(document.getElementById('tutorModal'));
+                tutorModal.show();
+            })
+            .catch(error => {
+                console.error('Error fetching tutor details:', error);
+            });
+    }
+
+    function dropClass(classId) {
+        if (!classId) {
+            console.error('Class ID is undefined');
+            return;
+        }
+
+        fetch(`/drop_class/${classId}`, { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Class dropped successfully");
+                    const subject = document.querySelector('.subject-item.active') ? document.querySelector('.subject-item.active').getAttribute('data-subject') : null;
+                    if (subject) {
+                        fetchClasses(subject); // Reload to reflect changes
+                    } else {
+                        location.reload(); // Fallback to reload the page if no subject is active
+                    }
+                } else {
+                    response.json().then(data => {
+                        console.error('Error dropping class:', data.message);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error dropping class:', error);
+            });
+    }
+</script>
+{% endblock %}

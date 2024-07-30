@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Tutoring Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-12">
+        <!-- Right section (70% width) -->
+        <div class="card shadow-sm rounded">
+            <div class="card-body">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="{{ url_for('static', filename='images/image1.jpg') }}" alt="Image 1"></div>
+                        <div class="swiper-slide"><img src="{{ url_for('static', filename='images/image2.jpg') }}" alt="Image 2"></div>
+                        <div class="swiper-slide"><img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Image 3"></div>
+                        <div class="swiper-slide"><img src="{{ url_for('static', filename='images/image4.jpg') }}" alt="Image 4"></div>
+                        <!-- Add more slides as needed -->
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
+                    <!-- Add Navigation -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Swiper JS -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<!-- Initialize Swiper -->
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        loop: true,
+        autoplay: {
+            delay: 5000, // 5 seconds per slide
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+/* Styling for the interests page to make checkboxes look like buttons */
+.interests-form {
+    text-align: center;
+    margin: 10px;
+}
+
+.interests-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    justify-content: center;
+}
+
+.interest-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    width: 100px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+}
+
+.interest-item:hover {
+    transform: scale(1.05);
+}
+
+.interest-label {
+    margin-top: 1px;
+    width: 100%;
+    text-align: center;
+    padding: 1px;
+    border-radius: 8px;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"]:checked + .interest-label {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+    transition: background-color 0.2s, color 0.2s;
+}

@@ -1,0 +1,78 @@
+.dropdown {
+    position: relative;
+}
+
+.dropdown-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Adjust as needed */
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: #333 transparent transparent transparent;
+}
+
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.login-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.login-container .form-control {
+    margin-bottom: 15px;
+}
+.login-container button {
+    width: 100%;
+}
+
+/* Styling for the courses and offerings */
+
+.card-header {
+    background-color: #f8f9fa;
+}
+
+.btn-link {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+.offering-label {
+    display: block;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.course-offering input[type="checkbox"] {
+    display: none;
+}
+
+.course-offering input[type="checkbox"]:checked + .offering-label {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.course-offering .offering-label:hover {
+    background-color: #e2e6ea;
+}
+
+/* Ensure all cards have the same minimum height */
+.card-min-height {
+    min-height: 500px; /* Adjust the value as needed */
+}

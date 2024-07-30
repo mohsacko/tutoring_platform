@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Tutor Dashboard - Tutoring Platform{% endblock %}
+
+{% block content %}
+<h3>Welcome to your Dashboard, {{ tutor.name }}!</h3>
+
+<div class="row justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow-sm rounded">
+            <div class="card-body">
+                <h5 class="card-title">Students enrolled in class</h5>
+                {% if class_details %}
+                    <div class="accordion" id="classAccordion">
+                        {% for class_name, details in class_details.items() %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                                        {{ class_name }}
+                                    </button>
+                                </h2>
+                                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#classAccordion">
+                                    <div class="accordion-body">
+                                        <p><strong>Day and Time: {{ details.description }}</strong></p>
+                                        {% if details.students %}
+                                            <ul class="list-group">
+                                                {% for student in details.students %}
+                                                    <li class="list-group-item">{{ student.name }} ({{ student.email }})</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p>No students registered for this class.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>You are not offering any classes.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

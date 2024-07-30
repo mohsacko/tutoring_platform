@@ -1,0 +1,21 @@
+/* Styling specific to the courses page */
+.courses-section input[type="checkbox"] {
+    display: none; /* Hide checkboxes on the courses page */
+}
+
+.courses-section .course-item {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.courses-section .course-item:hover {
+    transform: scale(1.05);
+}
+
+.courses-section .course-label {
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+}
